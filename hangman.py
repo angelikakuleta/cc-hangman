@@ -14,7 +14,7 @@ def play(word, lives):
 
     while lives > 0 and guessed < len(word):
 
-        print_state(state)
+        print_state(state, lives)
 
         # case insensitive player input
         player_input = (input("Enter a letter: ")).lower()
@@ -22,10 +22,11 @@ def play(word, lives):
         # check if the player want to quit
         if (player_input == "quit"):
             print("Good Bye!")           
-            return # finish the game immediately 
+            return # finish the game immediately  
 
         # check if the letter repeated
-        if (player_input in tried): 
+        if (player_input in tried):
+            print_state(state, lives)
             print("The letter is repeated.")
             print_tried(tried)
             input("Press enter to continue..")            
@@ -45,38 +46,116 @@ def play(word, lives):
                 i += 1
         else:
             lives -= 1 # reduce lives
+            print_state(state, lives)
 
             if lives > 0:
                 print("Missed!")               
                 print_tried(tried)
                 print("Try again.")
             else:
-                print("Sorry, you lose.")
+                print(game_over)
                 return # finish the game immediately
             
             input("\nPress enter to continue..")
    
-    print_state(state)
-    print("Congratulation!")
+    print_state(state, lives)
+    print(game_win)
 
 
-def print_state(iterable):
+def print_state(iterable, lives):
     # clear terminal
     os.system("cls || clear")
+
+    print(hangman_title)
+    print(f'\n----------- You have {lives} chances to guess -----------\n')
+    print(hangman_states[-lives-1], end ="")
 
     # print characters with spaces between
     for ch in iterable:
         print(ch, end=" ")
 
-    print("\n")
+    print(f'\n\n\n--------------------------------------------------\n\n')
 
 
 def print_tried(iterable):
-    print("You already tried:")
+    print("You already entered: ", end="")
     for ch in iterable:
         print(ch, end=" ")
 
     print("\n")
 
+
+hangman_title = '''
+     _   _                   __  __             
+    | | | | __ _ _ __   __ _|  \/  | __ _ _ __  
+    | |_| |/ _` | '_ \ / _` | |\/| |/ _` | '_ \ 
+    |  _  | (_| | | | | (_| | |  | | (_| | | | |
+    |_| |_|\__,_|_| |_|\__, |_|  |_|\__,_|_| |_|
+                       |___/                        
+'''
+
+game_over = '''  ____                         ___                 
+ / ___| __ _ _ __ ___   ___   / _ \__   _____ _ __ 
+| |  _ / _` | '_ ` _ \ / _ \ | | | \ \ / / _ \ '__|
+| |_| | (_| | | | | | |  __/ | |_| |\ V /  __/ |   
+ \____|\__,_|_| |_| |_|\___|  \___/  \_/ \___|_|   
+'''
+
+game_win = '''      __   __                     _       _ 
+      \ \ / /__  _   _  __      _(_)_ __ | |
+       \ V / _ \| | | | \ \ /\ / / | '_ \| |
+        | | (_) | |_| |  \ V  V /| | | | |_|
+        |_|\___/ \__,_|   \_/\_/ |_|_| |_(_)
+'''
+
+hangman_states = ('''
+      ______
+      |/
+      |
+      |
+      |
+    __|_____        ''','''
+      ______
+      |/    |
+      |
+      |
+      |
+    __|_____        ''','''
+      ______
+      |/    |
+      |     O
+      |
+      |
+    __|_____        ''','''
+      ______
+      |/    |
+      |    (O
+      |
+      |
+    __|_____        ''','''
+      ______
+      |/    |
+      |    (O)
+      |
+      |
+    __|_____        ''','''
+      ______
+      |/    |
+      |    (O)
+      |     |
+      |
+    __|_____        ''','''
+      ______
+      |/    |
+      |    (O)
+      |     |
+      |    /
+    __|_____        ''','''
+      ______
+      |/    |
+      |    (O)
+      |     |
+      |    / \\
+    __|_____        ''')
 
 play('Codecool', 6)
