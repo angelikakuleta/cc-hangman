@@ -8,7 +8,7 @@ hangman_title = '''
       | |_| |/ _` | '_ \ / _` | |\/| |/ _` | '_ \ 
       |  _  | (_| | | | | (_| | |  | | (_| | | | |
       |_| |_|\__,_|_| |_|\__, |_|  |_|\__,_|_| |_|
-                       |___/                        
+                         |___/                        
 '''
 
 game_over = '''   ______                        ____                 
@@ -83,13 +83,15 @@ def play(word, lives):
     # initiate variables
     state = []
     tried = set()
-    guessed = 0
 
     # give the initial state 
     for i in range(len(word)): 
-        state.append("_")
+        if word[i] == " ":
+            state.append(" ") 
+        else:
+            state.append("_")
 
-    while lives > 0 and guessed < len(word):
+    while lives > 0 and "_" in state:
 
         print_state(state, lives)
 
@@ -119,7 +121,6 @@ def play(word, lives):
             for ch in word: 
                 if ch.lower() == player_input:
                     state[i] = ch
-                    guessed += 1
                 i += 1
         else:
             lives -= 1 # reduce lives
@@ -195,6 +196,7 @@ def menu_option():
         print("2 - medium")
         print("3 - hard")
         print("Enter \"quit\" to end the game.\n")
+        
         player_input = input()
 
     return player_input
