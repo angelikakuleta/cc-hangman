@@ -3,27 +3,27 @@ from random import randint
 
 
 hangman_title = '''
-     _   _                   __  __             
-    | | | | __ _ _ __   __ _|  \/  | __ _ _ __  
-    | |_| |/ _` | '_ \ / _` | |\/| |/ _` | '_ \ 
-    |  _  | (_| | | | | (_| | |  | | (_| | | | |
-    |_| |_|\__,_|_| |_|\__, |_|  |_|\__,_|_| |_|
+       _   _                   __  __             
+      | | | | __ _ _ __   __ _|  \/  | __ _ _ __  
+      | |_| |/ _` | '_ \ / _` | |\/| |/ _` | '_ \ 
+      |  _  | (_| | | | | (_| | |  | | (_| | | | |
+      |_| |_|\__,_|_| |_|\__, |_|  |_|\__,_|_| |_|
                        |___/                        
 '''
 
-game_over = '''  ____                         ___                 
- / ___| __ _ _ __ ___   ___   / _ \__   _____ _ __ 
-| |  _ / _` | '_ ` _ \ / _ \ | | | \ \ / / _ \ '__|
-| |_| | (_| | | | | | |  __/ | |_| |\ V /  __/ |   
- \____|\__,_|_| |_| |_|\___|  \___/  \_/ \___|_|   
+game_over = '''   ______                        ____                 
+  / ____/___ _____ ___  ___     / __ \_   _____  _____
+ / / __/ __ `/ __ `__ \/ _ \   / / / / | / / _ \/ ___/
+/ /_/ / /_/ / / / / / /  __/  / /_/ /| |/ /  __/ /    
+\____/\__,_/_/ /_/ /_/\___/   \____/ |___/\___/_/     
 
 '''
 
-game_win = '''      __   __                     _       _ 
-      \ \ / /__  _   _  __      _(_)_ __ | |
-       \ V / _ \| | | | \ \ /\ / / | '_ \| |
-        | | (_) | |_| |  \ V  V /| | | | |_|
-        |_|\___/ \__,_|   \_/\_/ |_|_| |_(_)
+game_win = '''       __  __                        _       __
+       \ \/ /___  __  __   _      __(_)___  / /
+        \  / __ \/ / / /  | | /| / / / __ \/ / 
+        / / /_/ / /_/ /   | |/ |/ / / / / /_/  
+       /_/\____/\__,_/    |__/|__/_/_/ /_(_)   
 
 '''
 
@@ -48,31 +48,31 @@ hangman_states = ('''
     __|_____        ''','''
       ______
       |/    |
-      |    (O
+      |    \\O
       |
       |
     __|_____        ''','''
       ______
       |/    |
-      |    (O)
+      |    \\O/
       |
       |
     __|_____        ''','''
       ______
       |/    |
-      |    (O)
+      |    \\O/
       |     |
       |
     __|_____        ''','''
       ______
       |/    |
-      |    (O)
+      |    \\O/
       |     |
       |    /
     __|_____        ''','''
       ______
       |/    |
-      |    (O)
+      |    \\O/
       |     |
       |    / \\
     __|_____        ''')
@@ -139,14 +139,20 @@ def play(word, lives):
     print(game_win)
 
 
-def load_words(): 
+def load_words(step): 
     words = []
     f = open("countries-and-capitals.txt")
+    lines = f.readlines()
 
     # iterate through the lines of a file
-    for line in f:
+    for i in range(0, len(lines), step):
+
         # append the first word of the line without whitespaces
-        words.append(line.split("|")[0].strip())
+        split_words = lines[i].split("|")
+        country = split_words[0].strip()
+
+        if len(country) > 0:
+            words.append(country)
 
     f.close()
 
@@ -158,14 +164,14 @@ def print_state(iterable, lives):
     os.system("cls || clear")
 
     print(hangman_title)
-    print(f'\n----------- You have {lives} chances to guess -----------\n')
+    print(f'\n------------- You have {lives} chances to guess -------------\n')
     print(hangman_states[-lives-1], end ="")
 
     # print characters with spaces between
     for ch in iterable:
         print(ch, end=" ")
 
-    print(f'\n\n\n--------------------------------------------------\n\n')
+    print(f'\n\n\n------------------------------------------------------\n\n')
 
 
 def print_tried(iterable):
@@ -175,15 +181,45 @@ def print_tried(iterable):
 
     print("\n")
 
+def menu_option():
+    
+    player_input = None
+
+    while not player_input and player_input != "quit":
+        os.system("cls || clear")
+
+        print(hangman_title)
+        print(f'\n---------------------- Choose a level -----------------------\n')
+   
+        print("1 - easy")
+        print("2 - medium")
+        print("3 - hard")
+        print("Enter \"quit\" to end the game.\n")
+        player_input = input()
+
+    return player_input
 
 def main():
-    words = load_words()
+
+    leaves = None
+    player_input = menu_option()
     
+    if player_input == "1":
+        leaves = 7
+    elif player_input == "2":
+        leaves = 5
+    elif player_input == "3":
+        leaves = 3
+    else:
+        return
+
+    words = load_words(4-int(player_input))
+
     # get a random word
     word = words[randint(0,len(words))]
 
     # start game
-    play(word, 6)
+    play(word, leaves)
 
 
 if __name__ == "__main__":
