@@ -78,6 +78,43 @@ hangman_states = ('''
     __|_____        ''')
 
 
+def menu_option():
+    
+    os.system("cls || clear")
+
+    print(hangman_title)
+    print("\n---------------------- Choose a level -----------------------\n")
+
+    print("1 - easy")
+    print("2 - medium")
+    print("3 - hard")
+    print("Enter \"quit\" to end the game.\n")
+    
+    return input().lower()
+
+
+def load_words(step): 
+    words = []
+
+    try:
+        with open("countries-and-capitals.txt") as f:
+            lines = f.readlines()      
+    except FileNotFoundError as err: 
+        raise err
+
+    # iterate through the lines of a file
+    for i in range(0, len(lines), step):
+
+        # append the first word of the line without whitespaces
+        split_words = lines[i].split("|")
+        country = split_words[0].strip()
+
+        if len(country) > 0:
+            words.append(country)
+ 
+    return words
+
+
 def play(word, lives):
 
     # initiate variables
@@ -102,6 +139,13 @@ def play(word, lives):
         if (player_input == "quit"):
             print("Good Bye!")           
             return # finish the game immediately  
+
+        # check if the character is a single letter
+        if (len(player_input) != 1 or not player_input.isalpha()):
+            print_state(state, lives)
+            print("Wrong value entered.\n")
+            input("Press enter to continue..")            
+            continue        
 
         # check if the letter repeated
         if (player_input in tried):
@@ -140,32 +184,12 @@ def play(word, lives):
     print(game_win)
 
 
-def load_words(step): 
-    words = []
-    f = open("countries-and-capitals.txt")
-    lines = f.readlines()
-
-    # iterate through the lines of a file
-    for i in range(0, len(lines), step):
-
-        # append the first word of the line without whitespaces
-        split_words = lines[i].split("|")
-        country = split_words[0].strip()
-
-        if len(country) > 0:
-            words.append(country)
-
-    f.close()
-
-    return words
-
-
 def print_state(iterable, lives):
     # clear terminal
     os.system("cls || clear")
 
     print(hangman_title)
-    print(f'\n------------- You have {lives} chances to guess -------------\n')
+    print(f'\n------------- You have {lives} {"chances" if lives > 1 else "chance"} to guess -------------\n')
     print(hangman_states[-lives-1], end ="")
 
     # print characters with spaces between
@@ -182,40 +206,28 @@ def print_tried(iterable):
 
     print("\n")
 
-def menu_option():
-    
-    player_input = None
-
-    while not player_input and player_input != "quit":
-        os.system("cls || clear")
-
-        print(hangman_title)
-        print(f'\n---------------------- Choose a level -----------------------\n')
-   
-        print("1 - easy")
-        print("2 - medium")
-        print("3 - hard")
-        print("Enter \"quit\" to end the game.\n")
-        
-        player_input = input()
-
-    return player_input
 
 def main():
 
     leaves = None
-    player_input = menu_option()
-    
-    if player_input == "1":
-        leaves = 7
-    elif player_input == "2":
-        leaves = 5
-    elif player_input == "3":
-        leaves = 3
-    else:
-        return
 
-    words = load_words(4-int(player_input))
+    while not leaves:
+        player_input = menu_option()    
+    
+        if player_input == "1":
+            leaves = 7
+        elif player_input == "2":
+            leaves = 5
+        elif player_input == "3":
+            leaves = 3
+        elif player_input == "quit":
+            return
+
+    try:
+        words = load_words(leaves//2)
+    except: 
+        print("Could not open file")
+        return
 
     # get a random word
     word = words[randint(0,len(words))]
