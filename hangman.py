@@ -142,7 +142,7 @@ def play(word, lives):
 
         # check if the player guessed
         if (player_input in word.lower()):
-            fill_in_the_state(player_input, state)  # put the guessed letter in the missing fields
+            fill_in_the_state(player_input, state, word)  # put the guessed letter in the missing fields
         else:
             lives -= 1  # reduce lives
             print_state(state, lives)
@@ -194,9 +194,9 @@ def print_entered_letters(entered_letters):
     print("\n")
 
 
-def fill_in_the_state(letter, state):
+def fill_in_the_state(letter, state, word):
     i = 0
-    for ch in state:
+    for ch in word:
         if ch.lower() == letter:
             state[i] = ch
         i += 1
