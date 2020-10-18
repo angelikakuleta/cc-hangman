@@ -109,13 +109,13 @@ def load_words(step):
     return words
 
 
-def play(word, lives):
+def play(word, lifes):
     # initiate variables
     state = generate_state(word)
     entered_letters = set()
 
-    while lives > 0 and "_" in state:
-        print_state(state, lives)
+    while lifes > 0 and "_" in state:
+        print_state(state, lifes)
         player_input = (input("Enter a letter: ")).lower()
 
         # check if the player want to quit
@@ -125,14 +125,14 @@ def play(word, lives):
 
         # check if the character is a single letter
         if (len(player_input) != 1 or not player_input.isalpha()):
-            print_state(state, lives)
+            print_state(state, lifes)
             print("Wrong value entered.\n")
             input("Press enter to continue..")
             continue
 
         # check if the letter repeated
         if (player_input in entered_letters):
-            print_state(state, lives)
+            print_state(state, lifes)
             print("The letter is repeated.")
             print_entered_letters(entered_letters)
             input("Press enter to continue..")
@@ -144,10 +144,10 @@ def play(word, lives):
         if (player_input in word.lower()):
             fill_in_the_state(player_input, state, word)  # put the guessed letter in the missing fields
         else:
-            lives -= 1  # reduce lives
-            print_state(state, lives)
+            lifes -= 1  # reduce lifes
+            print_state(state, lifes)
 
-            if lives > 0:
+            if lifes > 0:
                 print("Missed!")
                 print_entered_letters(entered_letters)
                 print("Try again.")
@@ -157,7 +157,7 @@ def play(word, lives):
 
             input("\nPress enter to continue..")
 
-    print_state(state, lives)
+    print_state(state, lifes)
     print(game_win)
 
 
@@ -171,13 +171,13 @@ def generate_state(word):
     return state
 
 
-def print_state(state, lives):
+def print_state(state, lifes):
     # clear terminal
     os.system("cls || clear")
 
     print(hangman_title)
-    print(f"\n------------- You have {lives} {'chances' if lives > 1 else 'chance'} to guess -------------\n")
-    print(hangman_states[-lives-1], end="")
+    print(f"\n------------- You have {lifes} {'chances' if lifes > 1 else 'chance'} to guess -------------\n")
+    print(hangman_states[-lifes-1], end="")
 
     # print characters with spaces between
     for ch in state:
